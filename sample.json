@@ -1,0 +1,799 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatbot",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        835
+      ],
+      "id": "6d8da247-a1ef-4b81-9346-2ab0e43d1eac",
+      "name": "Webhook1",
+      "webhookId": "050a64a8-00d2-4c37-a98c-c5df0a449c69"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "data0",
+        "name": "={{ $json.body.name }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1INWKvqcWoBWEj4Ddn_LtEO-0fFBxyQzj",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1INWKvqcWoBWEj4Ddn_LtEO-0fFBxyQzj"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        0,
+        635
+      ],
+      "id": "835d1ee1-7df2-47cf-86cd-df3a42cd0953",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "s19uPEveVsU3fFMf",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        220,
+        635
+      ],
+      "id": "a2675ded-0d4e-4b47-ace5-e2ebae48b03e",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "s19uPEveVsU3fFMf",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ocr.space/parse/image",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "5d05afa9fd88957"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        785
+      ],
+      "id": "0c4aa7f8-039d-4298-9d56-5f71b2aa4631",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ff0ee97d-f47c-4fbd-8adc-d84d0ab90409",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "=prescription*",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        635
+      ],
+      "id": "3c1dbda8-9f5b-4a71-8d97-2a482621dc7a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "boxes",
+        "options": {}
+      },
+      "type": "n8n-nodes-tesseractjs.tesseractNode",
+      "typeVersion": 1,
+      "position": [
+        660,
+        435
+      ],
+      "id": "046804d1-b4f3-454a-8f5e-85f3108aaae5",
+      "name": "Tesseract"
+    },
+    {
+      "parameters": {
+        "operation": "draw",
+        "color": "#00ff00e0",
+        "startPositionX": "={{ $('Tesseract2').params.left }}",
+        "startPositionY": "={{ $('Tesseract2').params.top }}",
+        "endPositionX": "={{ $('Tesseract2').params.left + $('Tesseract2').params.width }}",
+        "endPositionY": "={{ $('Tesseract2').params.top + $('Tesseract2').params.height }}",
+        "cornerRadius": 2,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        880,
+        435
+      ],
+      "id": "05e6841e-4427-493a-a549-2ba14567b1ca",
+      "name": "Draw detection area1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5f661f09-8f49-4aa3-84cc-2739e83387ff",
+              "leftValue": "={{ $json.blocks }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        435
+      ],
+      "id": "479e6cbb-d94e-4fef-b0e6-45f6dd27238b",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "operation": "multiStep",
+        "operations": {
+          "operations": [
+            {
+              "operation": "text",
+              "text": "=\"{{ $json.blocks[0].text.trim() }}\" ({{ $json.blocks[0].confidence.toFixed(0) }}%)",
+              "fontSize": 9,
+              "fontColor": "#FF0000",
+              "positionX": "={{ $json.blocks[0].bbox.x0 }}",
+              "positionY": "={{ $json.blocks[0].bbox.y0 - 2 }}",
+              "font": "/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"
+            },
+            {
+              "operation": "draw",
+              "color": "#FF0000E0",
+              "startPositionX": "={{ $json.blocks[0].bbox.x0 }}",
+              "startPositionY": "={{ $json.blocks[0].bbox.y0 }}",
+              "endPositionX": "={{ $json.blocks[0].bbox.x1 }}",
+              "endPositionY": "={{ $json.blocks[0].bbox.y1 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        460
+      ],
+      "id": "26a73606-26e0-4521-bbc9-3534e8fc2939",
+      "name": "Edit Image1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "414ad4da-ff83-4eed-b3b6-c857cda5c4e3",
+              "name": "blocks",
+              "value": "={{ $json.blocks.slice(1) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1540,
+        535
+      ],
+      "id": "8889330a-5cfc-49dc-b10f-030f0ccee732",
+      "name": "Pop first element1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        260
+      ],
+      "id": "67eb44f0-387f-4893-9532-6d4316d0893f",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-tesseractjs.tesseractNode",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        260
+      ],
+      "id": "f7878523-19a1-4f20-be6e-ad83f5a4fad0",
+      "name": "Tesseract1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}{{ $json.chatInput[0].ParsedText }}",
+        "options": {
+          "systemMessage": "You are a helpful assistant\n\nTHE INPUT GIVEN WILL BE UNFILTERED EXTRACTED TEXT FROM IMAGES YOU HAVE TO PREDICT AND FILTER THIS TEXTUAL INFORMATION IN A VERY ACCURATE MANNER JUST PROVIDE THE SUMMARY FOR THIS TEXTUAL INPUTS.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1792,
+        535
+      ],
+      "id": "43e2833d-7a75-472f-a0c4-6b56017311fd",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nreturn {'chatInput':_input.all()[0].json['ParsedResults']}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        785
+      ],
+      "id": "be96a70c-0552-444c-8e01-81c62aeddeb5",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen2.5-vl-32b-instruct:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        755
+      ],
+      "id": "f0f8247b-aa8c-429a-9daa-dd4f4533f87e",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "v1JyPQ6OrpzddgEB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2200,
+        485
+      ],
+      "id": "27e4fabe-a1de-4804-9d80-48c50615d88d",
+      "name": "Google Drive2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "s19uPEveVsU3fFMf",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        2200,
+        1010
+      ],
+      "id": "8e5f39c6-3e05-4419-ab63-a568962b1a94",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Google Drive').item.json.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1940,
+        755
+      ],
+      "id": "0523a7a8-c0b3-41a2-8397-5543b35e7477",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "25807acf-0925-47ab-93b8-1bc2b8c621f5",
+              "leftValue": "={{ $json.body.chatInput }}",
+              "rightValue": "application/json",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        835
+      ],
+      "id": "96a2e4a1-675e-41ec-ba44-807ab415a14d",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }}{{ $json.body.userId }}",
+        "options": {
+          "systemMessage": "USE THIS TOOL ONLY FOR THE MENTIONED USER_ID. THIS USER_ID SHOULD BE USED TO GET THE DETAILS OF EVERY MEDICAL INFORMATION FOR ANY MEDICAL QUERY.\n\nUSE THE SUPABASE QUESTION AND ANSWER TOOL FOR ONLY GETTING THE PRESCRIBED MEDICATION INFORMATION AND FOR MEDICAL CONDITION INFORMATION OF THE PATIENT USE USERINFO NODE.\nJUST PROVIDE BREIFE AND PROPER FORMAT ANSWER."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1792,
+        1060
+      ],
+      "id": "9fcfcc22-09cc-4347-8a9d-eca5deaf3a0f",
+      "name": "Medical Assistant"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokensToSample": 4096
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        1280
+      ],
+      "id": "efbd1e3b-f9cc-45a9-b19f-8a5746b15edd",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "gV4GnxGyHzURJkiV",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "medical_info",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ $('Webhook1').item.json.body.userId }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        1280
+      ],
+      "id": "d284c73f-a931-4354-ad1f-f7174ce1e0bb",
+      "name": "USERINFO",
+      "credentials": {
+        "supabaseApi": {
+          "id": "yfqkvU86rgfGZNst",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "medicalinfo",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        1280
+      ],
+      "id": "9dc0ab7c-a5da-4de7-8282-46bee12bf9b2",
+      "name": "PRESCRIPTION",
+      "credentials": {
+        "supabaseApi": {
+          "id": "yfqkvU86rgfGZNst",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Tesseract",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tesseract": {
+      "main": [
+        [
+          {
+            "node": "Draw detection area1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draw detection area1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image1": {
+      "main": [
+        [
+          {
+            "node": "Pop first element1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pop first element1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing1": {
+      "main": [
+        [
+          {
+            "node": "Tesseract1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tesseract1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Medical Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medical Assistant": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Medical Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "USERINFO": {
+      "ai_tool": [
+        [
+          {
+            "node": "Medical Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PRESCRIPTION": {
+      "ai_tool": [
+        [
+          {
+            "node": "Medical Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f19f64d85fbfd641c180bc6f6e684b1f0ed03a91e364bd19c76aeb9614124dfe"
+  }
+}
