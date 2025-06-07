@@ -1,6 +1,14 @@
 # Swasthya-AI
 ## Bridging India's Healthcare Access Gaps
 
+[![GitHub](https://img.shields.io/badge/GitHub-SwasthyaAi-blue)](https://github.com/8riddesh/SwasthyaAi)
+
+## 🎥 Working Demo
+
+[![Working Model Demo](https://img.shields.io/badge/Demo-Working_Model-red)](https://drive.google.com/file/d/1XUySaHxnSM5wD-iho7YXXf0w98zAjTS2/view?usp=sharing)
+
+**[View Working Model Video →](https://drive.google.com/file/d/1XUySaHxnSM5wD-iho7YXXf0w98zAjTS2/view?usp=sharing)**
+
 ## 📋 Project Overview
 
 Swasthya-AI is an AI-powered healthcare platform that addresses critical gaps in India's healthcare system through three integrated services:
@@ -14,7 +22,7 @@ Swasthya-AI is an AI-powered healthcare platform that addresses critical gaps in
 - **Frontend**: Streamlit
 - **AI Models**: LangChain, OpenAI GPT, Ollama LLMs
 - **Sentiment Analysis**: PyTorch
-- **OCR**: Tesseract
+- **OCR**: Tesseract, OpenCV, PyMuPDF
 - **Automation**: n8n workflows
 - **Database**: Supabase
 - **TTS**: Google Text-to-Speech
