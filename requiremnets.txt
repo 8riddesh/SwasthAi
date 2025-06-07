@@ -1,11 +1,48 @@
-streamlit
-bcrypt
-python-dotenv
-supabase
-langchain-openai
-langchain-core
-langchain-community
-langchain
-ollama
-python-dotenv
-plotly
+# Core Framework
+streamlit>=1.45.0
+streamlit-option-menu>=0.4.0
+
+# Database & Backend
+supabase>=2.15.0
+SQLAlchemy>=2.0.40
+
+# AI & LLM
+ollama>=0.4.8
+openai>=1.78.0
+langchain>=0.3.25
+langchain-core>=0.3.59
+langchain-openai>=0.3.16
+transformers>=4.51.0
+torch>=2.7.0
+
+# Data Processing
+pandas>=2.2.0
+numpy>=2.1.0
+pillow>=11.2.0
+
+# OCR & Computer Vision (for prescription processing)
+opencv-python>=4.11.0
+python-doctr>=0.11.0
+pypdf>=5.4.0
+
+# Audio/TTS (you'll need to add specific TTS library)
+# Note: Add your preferred TTS library like:
+# pyttsx3>=2.90
+# or
+# gTTS>=2.3.0
+# or 
+# espeak-ng
+
+# Environment & Config
+python-dotenv>=1.1.0
+pydantic>=2.11.0
+pydantic-settings>=2.9.0
+
+# HTTP & API
+requests>=2.32.0
+httpx>=0.28.0
+fastapi>=0.115.0 (if building API endpoints)
+
+# Utilities
+PyYAML>=6.0.0
+tqdm>=4.67.0
