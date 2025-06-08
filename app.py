@@ -25,14 +25,14 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
 os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 
-client = Groq(api_key="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")
+client = Groq(api_key="apiKey")
 speech_file_path = Path(__file__).parent / "speech.mp3"
 
 # N8N configuration
-N8N_CHATBOT_URL = os.getenv("N8N_CHATBOT_URL", "http://localhost:5678/webhook-test/chatbot")
-N8N_FILE_UPLOAD_URL = os.getenv("N8N_FILE_UPLOAD_URL", "http://localhost:5678/webhook-test/chatbot")
+N8N_CHATBOT_URL = os.getenv("N8N_CHATBOT_URL", "webhook-endpoint")
+N8N_FILE_UPLOAD_URL = os.getenv("N8N_FILE_UPLOAD_URL", "webhook-endpoint")
 user_id = None
-web_url = "http://localhost:5678/webhook/chatbot"
+web_url = "webhook-endpoint"
 
 def generate_audio(text, key_suffix=""):
     """Generate audio from text using gTTS and return the file path"""
