@@ -10,7 +10,7 @@ import time
 import json
 from langchain_groq import ChatGroq
 
-api_key="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"
+api_key="groqApi"
 
 
 def initialize_llm():
