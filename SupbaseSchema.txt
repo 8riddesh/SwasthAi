@@ -1,0 +1,69 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.chat_history (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  question text NOT NULL,
+  answer text NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  metadata jsonb,
+  question_embedding USER-DEFINED,
+  answer_embedding USER-DEFINED,
+  CONSTRAINT chat_history_pkey PRIMARY KEY (id),
+  CONSTRAINT chat_history_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users1(id)
+);
+CREATE TABLE public.emotional_diary (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  entry text NOT NULL,
+  response text NOT NULL,
+  mood character varying NOT NULL,
+  json_data jsonb,
+  created_at timestamp with time zone DEFAULT now(),
+  entry_embedding USER-DEFINED,
+  response_embedding USER-DEFINED,
+  CONSTRAINT emotional_diary_pkey PRIMARY KEY (id),
+  CONSTRAINT emotional_diary_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users1(id)
+);
+CREATE TABLE public.medical_info (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  condition_name character varying NOT NULL,
+  condition_type character varying NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT medical_info_pkey PRIMARY KEY (id),
+  CONSTRAINT medical_info_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users1(id)
+);
+CREATE TABLE public.medicalinfo (
+  content text,
+  user_id uuid,
+  CONSTRAINT medicalinfo_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users1(id)
+);
+CREATE TABLE public.patients (
+  id integer NOT NULL DEFAULT nextval('patients_id_seq'::regclass),
+  username character varying NOT NULL UNIQUE,
+  password character varying NOT NULL,
+  age integer CHECK (age >= 0),
+  medicalcondition character varying,
+  gender character varying CHECK (gender::text = ANY (ARRAY['male'::character varying::text, 'female'::character varying::text, 'other'::character varying::text])),
+  CONSTRAINT patients_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.profiles (
+  id uuid NOT NULL,
+  mail text,
+  password text,
+  CONSTRAINT profiles_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.users1 (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  email character varying NOT NULL UNIQUE,
+  password_hash character varying NOT NULL,
+  full_name character varying NOT NULL,
+  age integer NOT NULL,
+  gender character varying NOT NULL,
+  contact_no character varying NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  embedding USER-DEFINED,
+  CONSTRAINT users1_pkey PRIMARY KEY (id)
+);
